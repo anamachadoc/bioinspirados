@@ -1,0 +1,13 @@
+GA:
+  n_pop: 100
+  n_elite: 2
+  n_gen: 100
+  prob_crossing: 1
+  prob_mutation: 0.05
+  prob_victory: 0.9
+
+Individual:
+  n_parameters: 2
+  n_bits: 6
+  x_min: -2
+  x_max: 2

@@ -1,0 +1,17 @@
+Agora vamos implementar um AG simples com representação binária dos
+parâmetros reais da função da Equação 1 de acordo com o fluxograma da
+Figura 4. Para isso você deve escolher a dimensão da função (pode ser 2
+inicialmente), a precisão de cada um dos parâmetros (pode ser a mesma para
+todos, sugestão 6 bits) e o intervalo de busca para cada um dos parâmetros
+(sugestão de -2 a 2).
+A seguir você deve definir a estrutura de dados que você irá armazenar
+os indivíduos e seus respectivos valores de fitness, além de uma função que
+transforme a codificação do indivíduo nos parâmetros da função.
+Outros valores a serem definidos são:
+* Tamanho da população;
+* Número máximo de gerações a serem executadas;
+* Critério de seleção de pais (sugestão - torneio)
+* Taxa de cruzamento (sugestão - 100%)
+* Taxa de mutação (sugestão 10%)
+* Sugere-se usar o elitismo, que compreende a sobrevivência do melhor
+indivíduo para geração seguinte
