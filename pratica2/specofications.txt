@@ -1,0 +1,17 @@
+Agora vamos implementar um AG simples com representação real, sendo cada cromossomo exatamente os 
+parâmetros da função da Equação 1. A implementação será de acordo com o fluxograma da Figura 1.
+Defina a estrutura de dados que você irá armazenar os indivíduos e seus respectivos valores de
+fitness e inicie a sua implementação.
+Outros valores a serem definidos são:
+• Tamanho da população;
+• Número máximo de gerações a serem executadas;
+• Critério de seleção de pais (Roleta)
+• Taxa de cruzamento (Calibrar)
+• Cruzamento por blend-αβ crossover
+• Taxa de mutação (Calibrar)
+• Mutação (substituição do valor a ser mutado por um valor qualquer do
+intervalo)
+• Sugere-se usar o elitismo, que compreende a sobrevivência do melhor in-
+divíduo para geração seguinte.
+Junto com essa implementação você fará a análise da eficiência da mesmo e
+um estudo dos parâmetros, descritos nas se cões que seguem.
