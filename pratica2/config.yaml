@@ -1,12 +1,15 @@
 GA:
-  n_pop: 100
+  n_pop: 20
   n_elite: 2
   n_gen: 100
   prob_crossing: 1
   prob_mutation: 0.05
   prob_victory: 0.9
+  alpha: 0.75
+  beta: 0.25
 
 Individual:
   n_parameters: 2
   x_min: -20
   x_max: 20
+  inversion_constant: 0.0000001

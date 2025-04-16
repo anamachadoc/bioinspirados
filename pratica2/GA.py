@@ -29,37 +29,41 @@ class GeneticAlgorithm():
       b = p.get_fitness()
       file.write(f'{a}, {b}\n')
 
-  def tournament(self):
+  def roulette(self):
     parents = []
+    sum_fitness = sum([p.get_inverted_fitness() for p in self.population])
+    roulette_values = [p.get_inverted_fitness()/sum_fitness for p in self.population]
     i = 0
     while( i < self.n_pop):
-      p1 = np.random.randint(0, self.n_pop)
-      p2 = np.random.randint(0, self.n_pop)
-      while(p1 == p2):
-        p2 = np.random.randint(0, self.n_pop)
-      random_victory = random.uniform(0, 1)
-      fitness_p1 = self.population[p1].get_fitness()
-      fitness_p2 = self.population[p2].get_fitness()
-      if (fitness_p1 < fitness_p2) or (fitness_p1 > fitness_p2 and random_victory > self.prob_victory):
-          winner = self.population[p1]
-      else:
-          winner = self.population[p2]
-      parents.append(winner)
-      i += 1
+      random_value = random.random()
+      accumulated_sum = 0
+      for j, prob in enumerate(roulette_values):  
+          accumulated_sum += prob
+          if accumulated_sum >= random_value:
+              parents.append(self.population[j])
+              i = i + 1
+              break  
     return parents
 
-  def get_crossing(self):
+  def get_crossing_alpha_beta(self):
+    self.parents = self.roulette()
     new_generation = []
     for i in range(0, self.n_pop, 2):
-        p1 = np.array(self.parents[i].get_chromosome())
-        p2 = np.array(self.parents[i + 1].get_chromosome())
-        if random.random() <= self.prob_crossing:
-            point = random.randint(1, self.config_individual['n_bits'] - 1)
-            offspring1 = [np.concatenate((p1[j][:point], p2[j][point:])) for j in range(2)]
-            offspring2 = [np.concatenate((p2[j][:point], p1[j][point:])) for j in range(2)]
-        else:
-            offspring1, offspring2 = p1, p2
-        new_generation.extend([Individual(offspring1, **self.config_individual), Individual(offspring2, **self.config_individual)])
+        p1, p2 = self.parents[i], self.parents[i + 1]
+        X, Y = (p1, p2) if p1.get_fitness() > p2.get_fitness() else (p2, p1)
+        X_chrom = X.get_chromosome()
+        Y_chrom = Y.get_chromosome()
+        child1_genes = []
+        child2_genes = []
+        for x_gene, y_gene in zip(X_chrom, Y_chrom):
+            d = x_gene - y_gene
+            min_val = y_gene - self.beta * d
+            max_val = x_gene + self.alpha * d
+            child1_genes.append(random.uniform(min_val, max_val))
+            child2_genes.append(random.uniform(min_val, max_val))
+        child1 = Individual(child1_genes, **self.config_individual)
+        child2 = Individual(child2_genes, **self.config_individual)
+        new_generation.extend([child1, child2])
     return new_generation
 
   def get_mutation(self):
