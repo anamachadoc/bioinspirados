@@ -46,7 +46,6 @@ class GeneticAlgorithm():
     return parents
 
   def get_crossing_alpha_beta(self):
-    self.parents = self.roulette()
     new_generation = []
     for i in range(0, self.n_pop, 2):
         p1, p2 = self.parents[i], self.parents[i + 1]
@@ -72,12 +71,10 @@ class GeneticAlgorithm():
         mutated = False
         mutated_genes = []
         for gene in chromosome:
-            new_gene = np.array([
-                1 - bit if random.random() <= self.prob_mutation else bit
-                for bit in gene])
-            if not np.array_equal(gene, new_gene):
+            new_gene = np.random.uniform(low=self.config_individual['x_min'], high=self.config_individual['x_max']) if random.random() <= self.prob_mutation else gene
+            if new_gene != gene:
                 mutated = True
-            mutated_genes.append(new_gene)
+                mutated_genes.append(new_gene)
         if mutated:
             self.population_aux[i] = copy.deepcopy(Individual(mutated_genes, **self.config_individual))
             
@@ -92,10 +89,13 @@ class GeneticAlgorithm():
     generation = 0
     while (generation < self.n_gen):
         self.best_fitness_per_generation.append(self.best_solutions[0].get_fitness())
-        self.parents = self.tournament() 
-        self.population_aux = copy.deepcopy(self.get_crossing())
+        self.parents = self.roulette() 
+        self.population_aux = copy.deepcopy(self.get_crossing_alpha_beta())
         self.get_mutation()
-        self.population = self.get_elitism()
+        if self.elitism:
+          self.population = self.get_elitism()
+        else:
+          self.population = self.population_aux
         self.best_solutions = self.get_best_solutions()
         generation += 1
     self.plot_fitness()
@@ -111,6 +111,5 @@ class GeneticAlgorithm():
         #plt.show()
         
   def save_fitness(self):
-    n = self.config_individual['n_bits']
-    with open(f'output/best_fitness_{n}.txt', 'w') as file:
-      file.write(f'{self.best_solutions[0].get_fitness()}')
+    with open(f'output/best_fitness.txt', 'w') as file:
+      file.write(f'{round(self.best_solutions[0].get_fitness(), 9)}')
