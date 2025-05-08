@@ -1,0 +1,56 @@
+#!/bin/bash
+prob_mutation_values=(0.01 0.05 0.1)
+prob_crossing_values=(0.6 0.8 1)
+n_pop_values=(25 50 100)
+n_gen_values=(25 50 100)
+
+# it uses a default config to build the structure of the temporary configs 
+# according to each set of parameters
+base_config="config_default.yaml"
+temp_config="config_temp.yaml"
+python_script="main.py"  
+
+gerar_config() {
+    # modified parameters: mutation and crossover probabilities, 
+    # population size, and number of generations
+    local prob_mutation=$1
+    local prob_crossing=$2
+    local n_pop=$3
+    local n_gen=$4
+    local execution=$5
+
+    cp "$base_config" "$temp_config"
+
+    sed -i "s/prob_mutation: .*/prob_mutation: $prob_mutation/" "$temp_config"
+    sed -i "s/prob_crossing: .*/prob_crossing: $prob_crossing/" "$temp_config"
+    sed -i "s/n_pop: .*/n_pop: $n_pop/" "$temp_config"
+    sed -i "s/n_gen: .*/n_gen: $n_gen/" "$temp_config"
+    sed -i "s/execution: .*/execution: $execution/" "$temp_config"
+     
+    # creating folders and organizing the folder hierarchy
+    output_dir="best_output/${prob_mutation}_${prob_crossing}_${n_pop}_${n_gen}"
+    mkdir -p "$output_dir"  
+    execution_dir="${output_dir}/execution_${execution}"
+    mkdir -p "$execution_dir"  
+
+    echo "run with config: $prob_mutation $prob_crossing $n_pop $n_gen"
+    python3 "$python_script" "$execution_dir"
+
+    rm "$temp_config"
+}
+
+execution_counter=0
+
+# parameter combination
+for prob_mutation in "${prob_mutation_values[@]}"; do
+    for prob_crossing in "${prob_crossing_values[@]}"; do
+        for n_pop in "${n_pop_values[@]}"; do
+            for n_gen in "${n_gen_values[@]}"; do
+                for execution_number in {0..9}; do
+                    gerar_config "$prob_mutation" "$prob_crossing" "$n_pop" "$n_gen" "$execution_number"
+                    execution_counter=$((execution_counter + 1))  
+                done
+            done
+        done
+    done
+done

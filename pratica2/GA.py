@@ -1,11 +1,13 @@
 from Individual import Individual
 import numpy as np
+import os
 import random
+from statistics import mean, median, stdev
 import copy
 import matplotlib.pyplot as plt
 
 class GeneticAlgorithm():
-  def __init__(self, **kwargs):
+  def __init__(self, save_path, **kwargs):
     for key, value in kwargs.get("GA", {}).items():
         setattr(self, key, value)
     self.config_individual = kwargs.get("Individual", {})
@@ -17,11 +19,15 @@ class GeneticAlgorithm():
             for _ in range(self.n_pop)]
     ]
     self.population_aux = []
-    self.best_solutions = self.get_best_solutions()
-
+    self.best_solutions = self.get_best_solutions()[:2]
+    self.n_pop = self.n_pop if self.n_pop % 2 == 0 else self.n_pop - 1
+    self.save_data = save_path
+    os.makedirs(self.save_data) if not os.path.exists(self.save_data) else None
+    print(self.save_data)
+    
   def get_best_solutions(self):
     sorted_population = sorted(self.population, key=lambda x: x.get_fitness())
-    return sorted_population[:self.n_elite]
+    return sorted_population
 
   def get_pop(self, pop, file):
     for p in pop:
@@ -29,6 +35,9 @@ class GeneticAlgorithm():
       b = p.get_fitness()
       file.write(f'{a}, {b}\n')
 
+  def get_fitness_population(self):
+    return [x.get_fitness() for x in self.population]
+  
   def roulette(self):
     parents = []
     sum_fitness = sum([p.get_inverted_fitness() for p in self.population])
@@ -47,7 +56,7 @@ class GeneticAlgorithm():
 
   def get_crossing_alpha_beta(self):
     new_generation = []
-    for i in range(0, self.n_pop, 2):
+    for i in range(0, len(self.parents), 2):
         p1, p2 = self.parents[i], self.parents[i + 1]
         X, Y = (p1, p2) if p1.get_fitness() > p2.get_fitness() else (p2, p1)
         X_chrom = X.get_chromosome()
@@ -89,17 +98,29 @@ class GeneticAlgorithm():
     generation = 0
     while (generation < self.n_gen):
         self.best_fitness_per_generation.append(self.best_solutions[0].get_fitness())
-        self.parents = self.roulette() 
+        self.save_data_generation(generation)
+        self.parents = self.roulette()
         self.population_aux = copy.deepcopy(self.get_crossing_alpha_beta())
         self.get_mutation()
         if self.elitism:
           self.population = self.get_elitism()
         else:
           self.population = self.population_aux
-        self.best_solutions = self.get_best_solutions()
+        self.best_solutions = self.get_best_solutions()[:self.n_elite]
         generation += 1
+        
     self.plot_fitness()
     self.save_fitness()
+
+  # used to observe the evolution of fitness in the best set of parameters
+  def save_data_generation(self, generation): 
+    with open(f'{self.save_data}/data_generation.txt', 'a') as file:
+        sorted_solutions = self.get_best_solutions()
+        best_fitness = sorted_solutions[0].get_fitness()
+        worst_fitness = sorted_solutions[self.n_pop-1].get_fitness()
+        mean_fitness = mean(self.get_fitness_population())
+        median_fitness = median(self.get_fitness_population())
+        file.write(f'{generation} {best_fitness} {worst_fitness} {mean_fitness} {median_fitness}\n')
 
   def plot_fitness(self):
         plt.plot(self.best_fitness_per_generation)
@@ -107,9 +128,12 @@ class GeneticAlgorithm():
         plt.xlabel('Generation')
         plt.ylabel('Best Fitness')
         plt.grid(True)
-        plt.savefig('output/best_fitness.png')
+        plt.savefig(f'{self.save_data}/best_fitness.png')
         #plt.show()
         
   def save_fitness(self):
-    with open(f'output/best_fitness.txt', 'w') as file:
-      file.write(f'{round(self.best_solutions[0].get_fitness(), 9)}')
+    best_fitness = self.best_solutions[0].get_fitness()
+    mean_fitness = mean(self.get_fitness_population())
+    stdev_fitness = stdev(self.get_fitness_population())
+    with open(f'{self.save_data}/data_fitness.txt', 'w') as file:
+      file.write(f'{best_fitness} {mean_fitness} {stdev_fitness}')

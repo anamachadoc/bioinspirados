@@ -1,14 +1,11 @@
 from GA import GeneticAlgorithm
 import yaml
-from random import seed
-import numpy as np
+import sys
 
 if __name__ == "__main__":
-    seed(10)
-    np.random.seed(10)
-    
-    with open('config.yaml', 'r') as file:
+    with open('config_temp.yaml', 'r') as file:
         kwargs = yaml.safe_load(file)
     
-    GA = GeneticAlgorithm(**kwargs)
+    save_path = sys.argv[1]
+    GA = GeneticAlgorithm(save_path, **kwargs)
     GA.run()
