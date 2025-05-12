@@ -1,0 +1,16 @@
+Agora vamos implementar um AG simples, com representação à sua escolha para a mochila, e que seguirá os passos do fluxograma da Figura 3.
+Você deve definir a estrutura de dados na qual irá armazenar os indivíduos e seus respectivos valores de fitness.
+Defina os valores listados de acordo com o experimento fatorial que vimos na última tarefa e utilize alguma instância encontrada aqui.
+Cada instância possui três arquivos, sendo:
+- pxx_c.txt: capacidade da mochila;
+- pxx_p.txt: utilidade dos objetos;
+- pxx_w.txt: pesos dos objetos;
+- pxx_s.txt: indivíduo ótimo, para que você avalie a solução do seu AG.
+Os parâmetros que devem ser definidos incluem:
+Tamanho da população;
+Número máximo de gerações a serem executadas;
+Critério de seleção de pais;
+Taxa de cruzamento;
+Taxa de mutação;
+Elitismo.
+
