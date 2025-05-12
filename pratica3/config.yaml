@@ -1,0 +1,12 @@
+
+n_pop: 100
+n_elite: 2
+n_gen: 100
+prob_crossing: 1
+prob_mutation: 0.01
+prob_victory: 0.9
+alpha: 0.75
+beta: 0.25
+elitism: True
+execution: 0
+

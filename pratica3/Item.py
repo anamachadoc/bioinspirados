@@ -4,7 +4,6 @@ class Item():
         self.ID = ID
         self.weight = weight
         self.utility_value = utility_value
-        print(self.ID)
 
     def get_ID(self):
         return self.ID
