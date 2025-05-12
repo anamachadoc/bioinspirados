@@ -9,4 +9,9 @@ alpha: 0.75
 beta: 0.25
 elitism: True
 execution: 0
+path_c: 'input/teste/pxx_c.txt'
+path_p: 'input/teste/pxx_p.txt'
+path_s: 'input/teste/pxx_s.txt'
+path_w: 'input/teste/pxx_w.txt'
+
 

@@ -1,4 +1,5 @@
 from Knapsack import Knapsack
+from Item import Item
 import numpy as np
 import os
 import random
@@ -10,20 +11,28 @@ class GeneticAlgorithm():
   def __init__(self, save_path, **kwargs):
     for key, value in kwargs.items():
         setattr(self, key, value)
+    self.items = self.get_items()
     self.parents = None
+    self.num_items = None
     self.best_fitness_per_generation = []
-    self.population = [Individual(individual, **self.config_individual) 
-        for individual in [
-            np.random.uniform(low=self.config_individual['x_min'], high=self.config_individual['x_max'], size=(self.config_individual['n_parameters'])) 
+    self.population = [Knapsack(self.items, binary_items, **kwargs) 
+        for binary_items in [random.randint(0, 1) for _ in range(self.num_items)] 
             for _ in range(self.n_pop)]
-    ]
     self.population_aux = []
     self.best_solutions = self.get_best_solutions()[:2]
     self.n_pop = self.n_pop if self.n_pop % 2 == 0 else self.n_pop - 1
     self.save_data = save_path
     os.makedirs(self.save_data) if not os.path.exists(self.save_data) else None
     print(self.save_data)
-    
+  
+  def get_items(self):
+    with open(self.path_p, 'r') as f:
+      utilities = [int(linha.strip()) for linha in f.readlines()]
+    with open(self.path_w, 'r') as f:
+      weights = [int(linha.strip()) for linha in f.readlines()]
+    self.num_items = len(utilities)
+    return [Item(i, weights[i], utilities[i]) for i in range(self.num_items)]
+  
   def get_best_solutions(self):
     sorted_population = sorted(self.population, key=lambda x: x.get_fitness())
     return sorted_population
