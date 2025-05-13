@@ -1,0 +1,16 @@
+
+n_pop: 100
+n_elite: 2
+n_gen: 100
+prob_crossing: 1
+prob_mutation: 0.01
+prob_victory: 0.9
+elitism: True
+execution: 0
+inversion_constant: 0.0000001
+path_c: 'input/teste/p07_c.txt'
+path_p: 'input/teste/p07_p.txt'
+path_s: 'input/teste/p07_s.txt'
+path_w: 'input/teste/p07_w.txt'
+
+
