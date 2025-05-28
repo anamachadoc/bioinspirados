@@ -11,8 +11,11 @@ class Path():
     def get_distance(self):
         return self.distance
     
+    def get_inverted_distance(self, inversion_constant):
+        return 1/(self.distance + inversion_constant)
+    
     def get_ordered_cities(self):
-        return self.ordered_cities
+        return self.ordered_cities[:-1]
 
     def calculate_distance(self):
         distance = 0

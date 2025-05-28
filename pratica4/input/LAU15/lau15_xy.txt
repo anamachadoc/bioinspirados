@@ -1,11 +1,3 @@
-#  lau15_dist.coord.txt
-#  created by TABLE_IO.F90
-#  at 11 February 2009  11:48:31.644 AM
-#
-#  Spatial dimension M =        2
-#  Number of points N =       15
-#  EPSILON (unit roundoff) =   0.222045E-15
-#
   0.549963E-07  0.985808E-08
   -28.8733     -0.797739E-07
   -79.2916      -21.4033    
