@@ -1,0 +1,11 @@
+name_problem: SGB
+num_cities: 15
+prob_crossing: 0.6
+n_pop: 500
+n_gen: 20
+execution: 6
+inversion_constant: 0.0000001
+prob_victory: 0.9
+prob_mutation: 0.05
+select_by: tournament
+input_path: input/SGB128/sgb128

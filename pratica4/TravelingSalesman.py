@@ -3,7 +3,9 @@ from typing import Any, Dict
 import random
 import matplotlib.pyplot as plt
 import copy
+from statistics import mean, median, stdev
 import numpy as np
+import os
 
 class TravelingSalesman():
   def __init__(self, **kwargs: Dict[str, Any]):
@@ -12,15 +14,14 @@ class TravelingSalesman():
     self.cities = list(range(1, self.num_cities + 1))
     self.set_paths = [Path(path + [path[0]], self.distance_cities, self.coordenates_cities)
         for path in ( random.sample(self.cities, self.num_cities) for _ in range(self.n_pop))]
-    print('POPULAÇÃO INICIAL')
-    self.print_pop(self.set_paths)
     self.path_aux = []
     self.best_solutions = self.get_best_solutions()[:2]
     self.best_fitness_per_generation = []
     self.selection_methods = {
       'tournament': self.tournament,
       'roulette': self.roulette}
-      
+    os.makedirs(self.output_path, exist_ok=True)
+    
   def get_set_paths(self):
     return self.set_paths
   
@@ -35,7 +36,6 @@ class TravelingSalesman():
   def get_elitism(self):
     best_individuals = self.best_solutions
     position = random.sample(range(self.n_pop), k=len(best_individuals))
-    #print('POSIÇÕES: ', position)
     for i, elite in enumerate(best_individuals):
         self.path_aux[position[i]] = copy.deepcopy(elite)
     return self.path_aux
@@ -65,6 +65,9 @@ class TravelingSalesman():
 
     return new_generation
 
+  def get_distance_paths(self):
+    return [x.get_distance() for x in self.set_paths]
+  
   def get_mutation(self):
     for i in range(self.n_pop):
         path = self.path_aux[i].get_ordered_cities()
@@ -118,27 +121,18 @@ class TravelingSalesman():
     generation = 0
     while generation < self.n_gen:
         self.best_fitness_per_generation.append(self.best_solutions[0].get_distance())
-        print(f"Geração {generation}: {self.best_solutions[0].get_distance()}")
-        #print('ESCOLHA DOS PAIS')
+        self.save_data_generation(generation)
         self.parents = self.selection_methods.get(self.select_by, self.roulette)()
-        #self.print_pop(self.parents)
         self.set_paths = self.parents
-        #print('NOVA GERAÇÃO')
         self.path_aux = self.get_crossing()
-        #self.print_pop(self.path_aux)
-        #print('MUTAÇÃO')
         self.get_mutation()
-        #self.print_pop(self.path_aux)
-        #print('ELITISMO')
         self.set_paths = self.get_elitism()
-        #self.print_pop(self.set_paths)
         self.best_solutions = self.get_best_solutions()[:2]
-        #print('MELHOR SOLUÇÃO')
-        #print(self.best_solutions[0].get_ordered_cities(), self.best_solutions[0].get_distance())
         generation += 1
 
     self.plot_fitness()
     self.save_fitness()
+    self.best_solutions[0].plot_path(self.output_path)
   
   def plot_fitness(self):
     plt.plot(self.best_fitness_per_generation)
@@ -146,12 +140,22 @@ class TravelingSalesman():
     plt.xlabel('Generation')
     plt.ylabel('Best Fitness')
     plt.grid(True)
-    plt.savefig('output/best_fitness.png')
-    #plt.show()
+    plt.savefig(f'{self.output_path}/best_fitness.png')
         
   def save_fitness(self):
-    with open(f'output/best_fitness.txt', 'w') as file:
-      file.write(f'{self.best_solutions[0].get_ordered_cities()}')
-      file.write(f'{self.best_solutions[0].get_distance()}')
+    best_fitness = self.best_solutions[0].get_distance()
+    mean_fitness = mean(self.get_distance_paths())
+    stdev_fitness = stdev(self.get_distance_paths())
+    with open(f'{self.output_path}/data_fitness.txt', 'w') as file:
+      file.write(f'{best_fitness} {mean_fitness} {stdev_fitness}')
     
+  def save_data_generation(self, generation): 
+    with open(f'{self.output_path}/data_generation.txt', 'a') as file:
+        sorted_solutions = self.get_best_solutions()
+        best_fitness = sorted_solutions[0].get_distance()
+        worst_fitness = sorted_solutions[self.n_pop-1].get_distance()
+        mean_fitness = mean(self.get_distance_paths())
+        median_fitness = median(self.get_distance_paths())
+        file.write(f'{generation} {best_fitness} {worst_fitness} {mean_fitness} {median_fitness}\n')
+
   

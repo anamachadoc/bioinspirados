@@ -1,0 +1,11 @@
+name_problem: LAU15
+num_cities: 15
+prob_crossing: 0.9
+n_pop: 100
+n_gen: 200
+execution: 0
+inversion_constant: 0.0000001
+prob_victory: 0.9
+prob_mutation: 0.05
+select_by: tournament
+input_path: input/LAU15/lau15

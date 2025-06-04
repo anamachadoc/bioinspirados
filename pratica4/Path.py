@@ -25,7 +25,7 @@ class Path():
             distance += self.distance_cities[origin_city][destination_city]
         return distance
     
-    def plot_path(self):
+    def plot_path(self, save_path):
         fig = go.Figure()
         for city_id, (x, y) in self.coordenates_cities.items():
             fig.add_trace(go.Scatter(
@@ -74,5 +74,5 @@ class Path():
             height=600
         )
 
-        fig.show()
+        fig.write_image(f"{save_path}/path.png")
 
