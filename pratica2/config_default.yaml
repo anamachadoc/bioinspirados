@@ -1,4 +1,4 @@
-GA:
+Colony:
   n_pop: 100
   n_elite: 2
   n_gen: 100
@@ -10,8 +10,22 @@ GA:
   elitism: True
   execution: 0
 
-Individual:
+Ant:
   n_parameters: 2
   x_min: -2 
   x_max: 2
   inversion_constant: 0.0000001
+
+config = {
+    'alpha':1,
+    'beta':5,
+    'distance_cities': distances,
+    'coordenates_cities': coordinates, 
+    'n_cities': 5,
+    'output_path': 'output/',
+    'possible_cities': list(coordinates.keys()),
+    'refresh_rate': 0.1,
+    'evaporation_rate': 0.5,
+    'Q': 100,
+    'initial_pheromone': 1
+}
