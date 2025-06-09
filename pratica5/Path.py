@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List, Tuple
 import plotly.graph_objects as go
 
 class Path():
@@ -10,6 +10,9 @@ class Path():
 
     def get_distance(self):
         return self.distance
+    
+    def get_num_cities(self): 
+        return len(self.ordered_cities) - 1
     
     def get_inverted_distance(self, inversion_constant):
         return 1/(self.distance + inversion_constant)

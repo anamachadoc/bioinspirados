@@ -1,0 +1,10 @@
+alpha: 1
+beta: 5
+n_cities: 15
+refresh_rate: 0.1
+evaporation_rate: 0.5
+execution: 0
+Q: 2
+initial_pheromone: 0.00000005
+max_iteration: 200
+input_path: input/LAU15/lau15
