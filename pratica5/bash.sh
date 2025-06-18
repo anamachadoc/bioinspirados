@@ -28,7 +28,7 @@ gerar_config() {
     sed -i "s/^evaporation_rate: .*/evaporation_rate: $evaporation_rate/" "$temp_config"
     sed -i "s/^execution: .*/execution: $execution/" "$temp_config"
 
-    output_dir="output/LAU15/a${alpha}_b${beta}_Q${Q}_r${refresh_rate}_e${evaporation_rate}"
+    output_dir="output/DANTZIG42/a${alpha}_b${beta}_Q${Q}_r${refresh_rate}_e${evaporation_rate}"
     mkdir -p "$output_dir"
     execution_dir="${output_dir}/execution_${execution}"
     mkdir -p "$execution_dir"

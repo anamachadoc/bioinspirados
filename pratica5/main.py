@@ -1,6 +1,7 @@
 from AntColony import AntColony
 import yaml
 import sys
+import os
 
 def get_infos(path):
     
@@ -16,21 +17,22 @@ def get_infos(path):
             for col_index, num in enumerate(numbers, start=1): 
                 distance[row_index][col_index] = num
             row_index += 1
-            
-    with open(f'{path}_xy.txt', 'r') as f:
-        lines = f.readlines()
-    xy = {}
-    for i, line in enumerate(lines, start=1):
-        if line.strip():
-            coords = line.split()
-            x = float(coords[0])
-            y = float(coords[1])
-            xy[i] = (x, y)
-
+    if os.path.exists(f'{path}_xy.txt'):      
+        with open(f'{path}_xy.txt', 'r') as f:
+            lines = f.readlines()
+        xy = {}
+        for i, line in enumerate(lines, start=1):
+            if line.strip():
+                coords = line.split()
+                x = float(coords[0])
+                y = float(coords[1])
+                xy[i] = (x, y)
+    else:
+        xy = None
     return distance, xy
 
 if __name__ == "__main__":
-    with open('config_temp.yaml', 'r') as file:
+    with open('config_default.yaml', 'r') as file:
         kwargs = yaml.safe_load(file)   
     kwargs['distance_cities'], kwargs['coordenates_cities'] = get_infos(kwargs['input_path'])
     kwargs['possible_cities'] = list(kwargs['distance_cities'].keys())
