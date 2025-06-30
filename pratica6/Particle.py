@@ -43,8 +43,6 @@ class Particle():
     def set_gbest(self):
         best_neighbor = min(self.neighbors, key=lambda p: p.get_fitness())
         if self.gbest is None or best_neighbor.get_fitness() < self.function_fitness(self.gbest):
-            #if self.gbest is not None:
-                #print(f'de {self.function_fitness(self.gbest)} para {best_neighbor.get_fitness()}')
             self.gbest = best_neighbor.get_position()
     
     def _new_speed(self):

@@ -1,0 +1,10 @@
+x_limits: [-2, 2]
+v_limits: [5, 50]
+execution: 0
+w: 0.5
+c1: 0.2
+c2: 0.8
+num_dimensions: 3
+num_pop: 100
+topology: focal
+max_iteration: 500

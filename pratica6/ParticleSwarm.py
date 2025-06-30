@@ -19,6 +19,9 @@ class ParticleSwarm():
         self._define_neighborhood()
         self._att_pbest()
         self._att_gbest()
+        self.best_fitness = None
+        self.stagnation_counter = 0
+        self.stopping_iteration = self.max_iteration 
         
     def _define_neighborhood(self):
         if self.topology == 'global':
@@ -127,20 +130,40 @@ class ParticleSwarm():
         output_file = os.path.join(self.output_path, '3d_animate.mp4')
         anim.save(output_file.replace(".mp4", ".gif"), writer='pillow', fps=5)
 
-
+    def save_stopping_iteration(self):
+        with open(f'{self.output_path}/stopping_iteration.txt', "w") as f:
+            f.write(f"{self.stopping_iteration}\n")
+            
     def run(self):
-        iteration = 0
+        iteration = 0 
         while iteration < self.max_iteration:
             for p in self.particles:
                 p.att_particle()
             self._att_pbest()
             self._att_gbest()
             self._define_neighborhood()
-            self.save_data_generation(iteration) 
-            self.best_fitness_per_generation.append(self.get_best_solutions()[0].get_fitness())
+            
+            self.save_data_generation(iteration)
+            current_best_fitness = self.get_best_solutions()[0].get_fitness()
+            self.best_fitness_per_generation.append(current_best_fitness)
+
+            if self.best_fitness is not None and np.isclose(current_best_fitness, self.best_fitness, rtol=1e-8):
+                stagnation_counter += 1
+            else:
+                stagnation_counter = 0
+                self.best_fitness = current_best_fitness
+
+            if stagnation_counter >= 50:
+                print(f"Stopping due to stagnation at iteration {iteration}")
+                self.stopping_iteration = iteration
+                break
+            
             self.att_positions()
             iteration += 1
+
         self.plot_fitness()
         self.save_fitness()
         self.animate_particles()
+        self.save_stopping_iteration()
+
 
